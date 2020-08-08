@@ -94,9 +94,10 @@ app.post('/signin', (req, res) => {
     comparePassword(req.body.password, user.password, function (err, isMatch) {
       if (err) throw err;
       if (!isMatch) {
-        res.send({ message: 'Password incorrect!' });
+        res.send({ error: 'Password incorrect!' });
+      } else {
+        res.send({ message: 'success', data: user });
       }
-      res.send({ message: 'success', data: user });
     });
   }).catch((err) => console.log('Error!', err));
 });
