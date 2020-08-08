@@ -87,25 +87,36 @@ app.post('/signin', (req, res) => {
   User.findOne({ email: req.body.email }, function (err, user) {
     if (err) throw err;
     if (!user) {
-      res.status('204').send({ message: 'User does not exist!' });
+      res.send({ error: true, message: 'User does not exist!' });
+      return;
     }
 
     comparePassword(req.body.password, user.password, function (err, isMatch) {
       if (err) throw err;
       if (!isMatch) {
-        res.status('204').send({ message: 'Password incorrect!' });
+        res.send({ message: 'Password incorrect!' });
       }
-      res.status('200').send({ message: 'success', data: user });
+      res.send({ message: 'success', data: user });
     });
   }).catch((err) => console.log('Error!', err));
 });
 
 app.post('/signup', (req, res) => {
-  User.create({ ...req.body, isVerified: false })
-    .then((data) => {
-      res.status('200').send({ message: 'success', data });
-    })
-    .catch((err) => console.log('Error!', err));
+  User.findOne({ email: req.body.email }, function (err, user) {
+    if (err) throw err;
+    if (user) {
+      res.send({
+        error:
+          'User already exist! Please use a different email or contact the admin.',
+      });
+    } else {
+      User.create({ ...req.body, isVerified: false })
+        .then((data) => {
+          res.status('200').send({ message: 'success', data });
+        })
+        .catch((err) => console.log('Error!', err));
+    }
+  });
 });
 
 app.listen(8000, () => console.log('Server is listening...'));
