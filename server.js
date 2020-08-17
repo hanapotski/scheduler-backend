@@ -47,6 +47,24 @@ const UserSchema = new mongoose.Schema(
   { timestamps: { createdAt: 'created_at' } }
 );
 
+const EventSchema = new mongoose.Schema(
+  {
+    createdBy: String,
+    modifiedBy: String,
+    modifiedDate: Date,
+    eventDate: { type: Date, required: true },
+    eventName: { type: String, required: true },
+    leader: { type: String, required: true },
+    backups: String,
+    keyboardist: String,
+    acousticGuitar: String,
+    electricGuitar: String,
+    drummer: String,
+    other: [{ name: String, instrument: String }],
+  },
+  { timestamps: { createdAt: 'created_at' } }
+);
+
 // https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1
 UserSchema.pre('save', function (next) {
   const SALT_WORK_FACTOR = 10;
@@ -78,10 +96,10 @@ function comparePassword(sentPassword, foundPassword, cb) {
 }
 
 const User = mongoose.model('User', UserSchema);
+const Event = mongoose.model('Event', EventSchema);
 
 // ROUTES
 //==================================================
-
 app.post('/signin', (req, res) => {
   // fetch user and test password verification
   User.findOne({ email: req.body.email }, function (err, user) {
@@ -117,6 +135,23 @@ app.post('/signup', (req, res) => {
         })
         .catch((err) => console.log('Error!', err));
     }
+  });
+});
+
+app.post('/addEvent', (req, res) => {
+  console.log(req.body);
+  Event.create(req.body)
+    .then((data) => {
+      console.log(data);
+      res.status('200').send({ message: 'success', data });
+    })
+    .catch((err) => console.log('Error!', err));
+});
+
+app.get('event', (req, res) => {
+  console.log(req.body);
+  res.send({
+    message: 'success',
   });
 });
 
