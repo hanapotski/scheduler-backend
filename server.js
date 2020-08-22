@@ -101,7 +101,7 @@ const Event = mongoose.model('Event', EventSchema);
 
 // ROUTES
 //==================================================
-app.get('/', (res, res) => {
+app.get('/', (req, res) => {
   res.send('hi');
 });
 app.post('/signin', (req, res) => {
