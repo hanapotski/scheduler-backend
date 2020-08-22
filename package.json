@@ -17,5 +17,8 @@
   },
   "scripts": {
     "start": "nodemon server.js"
+  },
+  "engines": {
+    "node": "13.7.0"
   }
 }
