@@ -38,7 +38,6 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      index: { unique: true },
     },
     password: { type: String, required: true },
     isVerified: Boolean,
@@ -51,7 +50,7 @@ const EventSchema = new mongoose.Schema(
   {
     createdBy: String,
     modifiedBy: String,
-    modifiedDate: Date,
+    updatedAt: Date,
     eventDate: { type: Date, required: true },
     eventName: { type: String, required: true },
     leader: { type: String, required: true },
@@ -59,10 +58,12 @@ const EventSchema = new mongoose.Schema(
     keyboardist: String,
     acousticGuitar: String,
     electricGuitar: String,
-    drummer: String,
+    drums: String,
+    keys: String,
+    bass: String,
     other: [{ name: String, instrument: String }],
   },
-  { timestamps: { createdAt: 'created_at' } }
+  { timestamps: { createdAt: 'createdAt' } }
 );
 
 // https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1
@@ -103,7 +104,12 @@ const Event = mongoose.model('Event', EventSchema);
 app.post('/signin', (req, res) => {
   // fetch user and test password verification
   User.findOne({ email: req.body.email }, function (err, user) {
-    if (err) throw err;
+    if (err) {
+      res.send({
+        error: true,
+        message: 'Something went wrong. Please contact the admin',
+      });
+    }
     if (!user) {
       res.send({ error: true, message: 'User does not exist!' });
       return;
@@ -117,7 +123,10 @@ app.post('/signin', (req, res) => {
         res.send({ message: 'success', data: user });
       }
     });
-  }).catch((err) => console.log('Error!', err));
+  }).catch((err) => {
+    console.log('Error!', err);
+    res.send({ error: true, message: err });
+  });
 });
 
 app.post('/signup', (req, res) => {
@@ -133,7 +142,10 @@ app.post('/signup', (req, res) => {
         .then((data) => {
           res.status('200').send({ message: 'success', data });
         })
-        .catch((err) => console.log('Error!', err));
+        .catch((err) => {
+          console.log('Error!', err);
+          res.send({ error: true, message: err });
+        });
     }
   });
 });
@@ -145,13 +157,34 @@ app.post('/addEvent', (req, res) => {
       console.log(data);
       res.status('200').send({ message: 'success', data });
     })
-    .catch((err) => console.log('Error!', err));
+    .catch((err) => {
+      console.log('Error!', err);
+      res.send({ error: true, message: err });
+    });
 });
 
-app.get('event', (req, res) => {
-  console.log(req.body);
-  res.send({
-    message: 'success',
+app.get('/events', (req, res) => {
+  Event.find()
+    .then((data) => {
+      res.status('200').send({ message: 'success', data });
+    })
+    .catch((err) => {
+      console.log('Error!', err);
+      res.send({ error: true, message: err });
+    });
+});
+
+app.put('/updateEvent', async (req, res) => {
+  Event.findByIdAndUpdate({ _id: req.body._id }, req.body, function (
+    err,
+    result
+  ) {
+    if (err) {
+      res.send({ error: true, message: err });
+    } else {
+      console.log(result);
+      res.send({ message: 'success' });
+    }
   });
 });
 
