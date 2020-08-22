@@ -101,6 +101,9 @@ const Event = mongoose.model('Event', EventSchema);
 
 // ROUTES
 //==================================================
+app.get('/', (res, res) => {
+  res.send('hi');
+});
 app.post('/signin', (req, res) => {
   // fetch user and test password verification
   User.findOne({ email: req.body.email }, function (err, user) {
