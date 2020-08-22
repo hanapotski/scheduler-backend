@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.SECRET));
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 5000;
 const dbUrl = process.env.DB_URL;
 
 mongoose.connect(dbUrl, { useNewUrlParser: true });
@@ -191,4 +191,4 @@ app.put('/updateEvent', async (req, res) => {
   });
 });
 
-app.listen(8000, () => console.log('Server is listening...'));
+app.listen(5000, () => console.log('Server is listening...'));
