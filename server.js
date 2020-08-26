@@ -62,6 +62,7 @@ const EventSchema = new mongoose.Schema(
     keys: String,
     bass: String,
     other: [{ name: String, instrument: String }],
+    archived: Boolean,
   },
   { timestamps: { createdAt: 'createdAt' } }
 );
@@ -102,7 +103,7 @@ const Event = mongoose.model('Event', EventSchema);
 // ROUTES
 //==================================================
 app.get('/', (req, res) => {
-  res.send('hi');
+  res.send('Server is awake');
 });
 app.post('/signin', (req, res) => {
   // fetch user and test password verification
@@ -180,13 +181,25 @@ app.get('/events', (req, res) => {
 app.put('/updateEvent', async (req, res) => {
   Event.findByIdAndUpdate({ _id: req.body._id }, req.body, function (
     err,
-    result
+    data
   ) {
     if (err) {
       res.send({ error: true, message: err });
     } else {
-      console.log(result);
-      res.send({ message: 'success' });
+      res.send({ message: 'success', data: req.data });
+    }
+  });
+});
+
+app.put('/archiveEvent', async (req, res) => {
+  Event.findByIdAndUpdate({ _id: req.body._id }, req.body, function (
+    err,
+    data
+  ) {
+    if (err) {
+      res.send({ error: true, message: err });
+    } else {
+      res.send({ message: 'success', data: req.data });
     }
   });
 });
