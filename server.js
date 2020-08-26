@@ -63,6 +63,7 @@ const EventSchema = new mongoose.Schema(
     bass: String,
     other: [{ name: String, instrument: String }],
     archived: Boolean,
+    lineup: String,
   },
   { timestamps: { createdAt: 'createdAt' } }
 );
