@@ -42,6 +42,7 @@ const UserSchema = new mongoose.Schema(
     password: { type: String, required: true },
     isVerified: Boolean,
     lastLogin: Date,
+    name: { type: String, required: true },
   },
   { timestamps: { createdAt: 'created_at' } }
 );
@@ -201,6 +202,16 @@ app.put('/archiveEvent', async (req, res) => {
       res.send({ error: true, message: err });
     } else {
       res.send({ message: 'success', data: req.data });
+    }
+  });
+});
+
+app.put('/deleteEvent', async (req, res) => {
+  Event.deleteOne({ _id: req.body._id }, function (err, data) {
+    if (err) {
+      res.send({ error: true, message: err });
+    } else {
+      res.send({ message: 'success' });
     }
   });
 });
