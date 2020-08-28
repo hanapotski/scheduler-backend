@@ -8,7 +8,10 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 
 const corsConfig = {
-  origin: 'http://localhost:3000' || 'https://hanapotski.github.io',
+  origin:
+    process.env.MODE === 'dev'
+      ? 'http://localhost:3000'
+      : 'https://hanapotski.github.io',
   methods: 'GET,PUT,POST,DELETE',
   credentials: true,
   allowedHeaders: 'Origin,X-Requested-With,Content-Type,Accept,Cookie',
